@@ -3,7 +3,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using ToDoList.Contexts;
 
 namespace ToDoList.Models
@@ -25,7 +24,7 @@ namespace ToDoList.Models
 
             context = ToDoFactory.Create(connectionString);
 
-            Add(new ToDoItem { Name = "Item1" });
+            //Add(new ToDoItem { Name = "Item1" });
         }
 
         public IEnumerable<ToDoItem> GetAll()
