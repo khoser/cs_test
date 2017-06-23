@@ -42,7 +42,7 @@ namespace TodoApi.Controllers
             return GetById(item.Key);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{key}")]
         public IActionResult Update(String key, [FromBody] ToDoItem item)
         {
             if (item == null || item.Key != key)
@@ -55,12 +55,14 @@ namespace TodoApi.Controllers
             {
                 return NotFound();
             }
-
+            todo.IsComplete = item.IsComplete;
+            todo.Name = item.Name;
+            //TodoItems.Update(item);
             TodoItems.Update(item);
             return new NoContentResult();
         }
 
-        [HttpPatch("{id}")]
+        [HttpPatch("{key}")]
         public IActionResult Update([FromBody] ToDoItem item, String key)
         {
             if (item == null)

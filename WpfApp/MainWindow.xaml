@@ -14,7 +14,7 @@
             <ColumnDefinition Width="5*"  Tag="UnDelete"/>
             <ColumnDefinition Width="95*"  Tag="UnDelete"/>
         </Grid.ColumnDefinitions>
-        <CheckBox x:Name="checkBox" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" Tag="UnDelete"/>
-        <TextBox x:Name="textBox" Grid.Column="1" Grid.Row="0" LostFocus="BtnPost_Click" Tag="UnDelete"/>
+        <CheckBox IsEnabled="False" x:Name="checkBox" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" Tag="UnDelete"/>
+        <TextBox x:Name="textBox" Grid.Column="1" Grid.Row="0" VerticalContentAlignment="Center" LostFocus="BtnPost_Click" Tag="UnDelete"/>
     </Grid>
 </Window>

@@ -53,11 +53,30 @@ namespace WpfApp
 
         private void SetVisibility()
         {
+            textBox.Text = "";
+            List<UIElement> lu = new List<UIElement>();
+
+            foreach (UIElement uiel in layoutGrid.Children)
+            {
+                if (uiel is CheckBox)
+                {
+                    if (((CheckBox)uiel).Tag is ToDoItem) { lu.Add(uiel); }
+                }
+                else if (uiel is TextBlock)
+                {
+                    if (((TextBlock)uiel).Tag is ToDoItem) { lu.Add(uiel); }
+                    if (((TextBlock)uiel).Tag is null) { lu.Add(uiel); }
+                }
+            }
+            foreach (UIElement l in lu)
+            {
+                layoutGrid.Children.Remove(l);
+            }
+
             int i = 0;
-            //layoutGrid.Children.Clear();
             for (i = layoutGrid.RowDefinitions.Count; i > 1 ; i--)
             {
-                layoutGrid.RowDefinitions.RemoveAt(i);
+                layoutGrid.RowDefinitions.RemoveAt(i-1);
             }
 
             i = 1;
@@ -69,17 +88,24 @@ namespace WpfApp
 
                 CheckBox chbx = new CheckBox();
                 chbx.IsChecked = tdi.IsComplete;
-                chbx.Tag = tdi.Key;
+                chbx.Tag = tdi;
                 chbx.VerticalAlignment = VerticalAlignment.Center;
                 chbx.HorizontalAlignment = HorizontalAlignment.Center;
+                chbx.Checked += checkBox_Checked;
+                chbx.Unchecked += checkBox_Checked;
                 layoutGrid.Children.Add(chbx);
                 Grid.SetRow(chbx, i);
                 Grid.SetColumn(chbx, 0);
 
                 TextBlock txblk = new TextBlock();
                 txblk.Text = tdi.Name;
-                txblk.Tag = tdi.Key;
+                txblk.Tag = tdi;
                 txblk.VerticalAlignment = VerticalAlignment.Center;
+                if (tdi.IsComplete)
+                {
+                    txblk.TextDecorations = TextDecorations.Strikethrough;
+                }
+                txblk.MouseRightButtonDown += textBox_MouseDoubleClick;
                 layoutGrid.Children.Add(txblk);
                 Grid.SetRow(txblk, i);
                 Grid.SetColumn(txblk, 1);
@@ -92,28 +118,16 @@ namespace WpfApp
             layoutGrid.RowDefinitions.Add(rdfn1);
 
             TextBlock txblki = new TextBlock();
-            txblki.Text = "total count: " + i.ToString();
+            txblki.Text = "total count: " + (--i).ToString();
             txblki.VerticalAlignment = VerticalAlignment.Center;
             layoutGrid.Children.Add(txblki);
             Grid.SetRow(txblki, ++i);
             Grid.SetColumn(txblki, 1);
         }
         
-
-        //private void Button_Click(object sender, RoutedEventArgs e)
-        //{
-        //    try
-        //    {
-        //        List<ToDoItem> ListOfTDI = await GetProductsAsync(URL);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        //Console.WriteLine(e.Message);
-        //    }
-        //}
         private void BtnPost_Click(object sender, RoutedEventArgs e)
         {
-            CreateClient();
+        //    CreateClient();
             if (textBox.Text != "")
             {
                 ToDoItem newToDoitem = new ToDoItem { Name = textBox.Text, IsComplete = (bool)checkBox.IsChecked };
@@ -127,25 +141,52 @@ namespace WpfApp
             {
                 var url = await GetProductsAsync(URL);
                 tdis = url;
-                SetVisibility();
             }
             catch (Exception e)
             {
-                //Console.WriteLine(e.Message);
+                MessageBox.Show(e.Message);
             }
+            SetVisibility();
         }
 
-        static async Task RunAsyncPost(ToDoItem product)
+        async Task RunAsyncPost(ToDoItem product)
         {
             try
             {
                 // Create a new product
-                var url = await CreateProductAsync(product);
+                await CreateProductAsync(product);
             }
             catch (Exception e)
             {
-                //Console.WriteLine(e.Message);
+                MessageBox.Show(e.Message);
             }
+            RunAsyncGet();
+        }
+
+        async Task RunAsyncDel(string uuid)
+        {
+            try
+            {
+                await DeleteProductAsync(uuid);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
+            RunAsyncGet();
+        }
+
+        async Task RunAsyncUpdate(ToDoItem product)
+        {
+            try
+            {
+                await UpdateProductAsync(product);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
+            RunAsyncGet();
         }
 
         static async Task<ToDoItem> GetProductAsync(string path)
@@ -181,7 +222,7 @@ namespace WpfApp
 
         static async Task<ToDoItem> UpdateProductAsync(ToDoItem product)
         {
-            HttpResponseMessage response = await client.PutAsJsonAsync($"api/todo/{product.Key}", product);
+            HttpResponseMessage response = await client.PutAsJsonAsync("api/todo/"+product.Key, product).ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
 
             // Deserialize the updated product from the response body.
@@ -191,44 +232,24 @@ namespace WpfApp
 
         static async Task<HttpStatusCode> DeleteProductAsync(string key)
         {
-            HttpResponseMessage response = await client.DeleteAsync($"api/products/{key}");
+            HttpResponseMessage response = await client.DeleteAsync("api/todo/"+key).ConfigureAwait(false);
             return response.StatusCode;
         }
 
-        //static async Task RunAsync(ToDoItem product)
-        //{
-        //    client.BaseAddress = new Uri(URL);
-        //    client.DefaultRequestHeaders.Accept.Clear();
-        //    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        private void checkBox_Checked(object sender, RoutedEventArgs e)
+        {
+            ToDoItem tdi = (ToDoItem)((CheckBox)e.OriginalSource).Tag;
+            tdi.IsComplete = (bool)((CheckBox)e.OriginalSource).IsChecked;
+            RunAsyncUpdate(tdi);
+            
+        }
 
-        //    try
-        //    {
-        //        // Create a new product
-        //        var url = await CreateProductAsync(product);
-
-        //        // Get the product
-        //        product = await GetProductAsync(url.PathAndQuery);
-        //        ShowProduct(product);
-
-        //        // Update the product
-        //        Console.WriteLine("Updating price...");
-        //        product.Price = 80;
-        //        await UpdateProductAsync(product);
-
-        //        // Get the updated product
-        //        product = await GetProductAsync(url.PathAndQuery);
-        //        ShowProduct(product);
-
-        //        // Delete the product
-        //        var statusCode = await DeleteProductAsync(product.Key);
-        //        Console.WriteLine($"Deleted (HTTP Status = {(int)statusCode})");
-
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        Console.WriteLine(e.Message);
-        //    }
-
-        //}
+        private void textBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            ToDoItem tdi = (ToDoItem)((TextBlock)e.OriginalSource).Tag;
+            RunAsyncDel(tdi.Key);
+            
+        }
+        
     }
 }

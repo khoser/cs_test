@@ -72,7 +72,9 @@ namespace ToDoList.Models
         public void Update(ToDoItem item)
         {
             //_todos[item.Key] = item;
-            context.Update(item);
+            //context.Attach(item);
+            //context.Update(item);
+            //context.Entry(item).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
             context.SaveChanges();
         }
     }
