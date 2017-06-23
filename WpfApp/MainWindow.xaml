@@ -7,9 +7,15 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-        <Button Content="Get" Click="Button_Click">
-            
-        </Button>
-      <Button Content="Post" Click="BtnPost_Click"></Button>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <!--TextBlock x:Name="textBlock" Grid.Column="0" Grid.ColumnSpan="4" /-->
+        <Button x:Name="btnGet" Content="Get" Click="Button_Click" Grid.Column="0" Grid.Row="0" />
+        <Button x:Name="btnPost" Content="Post" Click="BtnPost_Click" Grid.Column="1" Grid.Row="1" />
     </Grid>
 </Window>

@@ -29,8 +29,9 @@ namespace WpfApp
     public partial class MainWindow : Window
     {
         static String URL = "http://localhost/";
-        ToDoItem tdi = new ToDoItem { Key = "1", Name = "New Name", IsComplete = false };
+        ToDoItem tdi = new ToDoItem { Key = "1", Name = "Job to do", IsComplete = false };
         static HttpClient client = new HttpClient();
+        private bool isclientfilled = false;
 
         public MainWindow()
         {
@@ -50,17 +51,23 @@ namespace WpfApp
         }
         private void BtnPost_Click(object sender, RoutedEventArgs e)
         {
+            if (!isclientfilled)
+            {
+                client.BaseAddress = new Uri(URL);
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                isclientfilled = true;
+            }
 
             RunAsyncPost(tdi);
+
+            var o = 1;
             
         }
 
         static async Task RunAsyncPost(ToDoItem product)
         {
-            client.BaseAddress = new Uri(URL);
-            client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
+            
             try
             {
                 // Create a new product
@@ -85,7 +92,7 @@ namespace WpfApp
 
         static async Task<Uri> CreateProductAsync(ToDoItem product)
         {
-            HttpResponseMessage response = await client.PostAsJsonAsync("api/todo", product);
+            HttpResponseMessage response = await client.PostAsJsonAsync("api/todo", product).ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
 
             // Return the URI of the created resource.
