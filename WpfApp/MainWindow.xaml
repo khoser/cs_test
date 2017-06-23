@@ -6,16 +6,15 @@
         xmlns:local="clr-namespace:WpfApp"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
-    <Grid>
+    <Grid x:Name="layoutGrid">
         <Grid.RowDefinitions>
-            <RowDefinition />
+            <RowDefinition x:Name="FirstRow" Tag="UnDelete" Height="20pt"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition />
+            <ColumnDefinition Width="5*"  Tag="UnDelete"/>
+            <ColumnDefinition Width="95*"  Tag="UnDelete"/>
         </Grid.ColumnDefinitions>
-        <!--TextBlock x:Name="textBlock" Grid.Column="0" Grid.ColumnSpan="4" /-->
-        <Button x:Name="btnGet" Content="Get" Click="Button_Click" Grid.Column="0" Grid.Row="0" />
-        <Button x:Name="btnPost" Content="Post" Click="BtnPost_Click" Grid.Column="1" Grid.Row="1" />
+        <CheckBox x:Name="checkBox" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" Tag="UnDelete"/>
+        <TextBox x:Name="textBox" Grid.Column="1" Grid.Row="0" LostFocus="BtnPost_Click" Tag="UnDelete"/>
     </Grid>
 </Window>
