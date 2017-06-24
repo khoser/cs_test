@@ -125,16 +125,6 @@ namespace WpfApp
             Grid.SetColumn(txblki, 1);
         }
         
-        private void BtnPost_Click(object sender, RoutedEventArgs e)
-        {
-        //    CreateClient();
-            if (textBox.Text != "")
-            {
-                ToDoItem newToDoitem = new ToDoItem { Name = textBox.Text, IsComplete = (bool)checkBox.IsChecked };
-                RunAsyncPost(newToDoitem);
-            }
-        }
-
         async Task RunAsyncGet()
         {
             try
@@ -250,6 +240,17 @@ namespace WpfApp
             RunAsyncDel(tdi.Key);
             
         }
-        
+
+        private void textBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                if (textBox.Text != "")
+                {
+                    ToDoItem newToDoitem = new ToDoItem { Name = textBox.Text, IsComplete = (bool)checkBox.IsChecked };
+                    RunAsyncPost(newToDoitem);
+                }
+            }
+        }
     }
 }
