@@ -79,6 +79,8 @@ namespace WpfApp
                 layoutGrid.RowDefinitions.RemoveAt(i-1);
             }
 
+            Style myCheckboxStyle = this.FindResource("myCheckboxStyle") as Style;
+
             i = 1;
             foreach (ToDoItem tdi in tdis)
             {
@@ -93,6 +95,7 @@ namespace WpfApp
                 chbx.HorizontalAlignment = HorizontalAlignment.Center;
                 chbx.Checked += checkBox_Checked;
                 chbx.Unchecked += checkBox_Checked;
+                chbx.Style = myCheckboxStyle;
                 layoutGrid.Children.Add(chbx);
                 Grid.SetRow(chbx, i);
                 Grid.SetColumn(chbx, 0);

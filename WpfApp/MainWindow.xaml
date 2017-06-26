@@ -6,6 +6,32 @@
         xmlns:local="clr-namespace:WpfApp"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
+    <Window.Resources>
+        <Style TargetType="{x:Type CheckBox}" x:Key="myCheckboxStyle">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type CheckBox}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image x:Name="checkboxImage" Source="Images/normal.png"/><!-- Width="32"/-->
+                            <ContentPresenter/>
+                        </StackPanel>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="checkboxImage" Property="Source" Value="Images/checked.png"/>
+                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsMouseOver" Value="True"/>
+                                    <Condition Property="IsChecked" Value="False"/>
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="checkboxImage" Property="Source" Value="Images/hover.png"/>
+                            </MultiTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
     <Grid x:Name="layoutGrid">
         <Grid.RowDefinitions>
             <RowDefinition x:Name="FirstRow" Tag="UnDelete" Height="20pt"/>
@@ -14,7 +40,7 @@
             <ColumnDefinition Width="5*"  Tag="UnDelete"/>
             <ColumnDefinition Width="95*"  Tag="UnDelete"/>
         </Grid.ColumnDefinitions>
-        <CheckBox IsEnabled="False" x:Name="checkBox" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" Tag="UnDelete"/>
+        <CheckBox IsEnabled="False" x:Name="checkBox" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" Tag="UnDelete" Style="{StaticResource myCheckboxStyle}"/>
         <TextBox x:Name="textBox" Grid.Column="1" Grid.Row="0" VerticalContentAlignment="Center" KeyDown="textBox_KeyDown" Tag="UnDelete"/>
     </Grid>
 </Window>
