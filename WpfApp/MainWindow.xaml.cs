@@ -28,7 +28,7 @@ namespace WpfApp
     /// </summary>
     public partial class MainWindow : Window
     {
-        static String URL = "http://localhost/";
+        static String URL = "http://todo.kter.ru/";
         List<ToDoItem> tdis = null;
         static HttpClient client = new HttpClient();
         private bool isclientfilled = false;
