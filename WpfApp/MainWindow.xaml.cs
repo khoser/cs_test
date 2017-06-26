@@ -54,6 +54,7 @@ namespace WpfApp
         private void SetVisibility()
         {
             textBox.Text = "";
+            textBox.Background = Brushes.Transparent;
             List<UIElement> lu = new List<UIElement>();
 
             foreach (UIElement uiel in layoutGrid.Children)
@@ -66,6 +67,10 @@ namespace WpfApp
                 {
                     if (((TextBlock)uiel).Tag is ToDoItem) { lu.Add(uiel); }
                     if (((TextBlock)uiel).Tag is null) { lu.Add(uiel); }
+                }
+                else if (uiel is Border)
+                {
+                    if (((Border)uiel).Tag is null) { lu.Add(uiel); }
                 }
             }
             foreach (UIElement l in lu)
@@ -84,9 +89,17 @@ namespace WpfApp
             i = 1;
             foreach (ToDoItem tdi in tdis)
             {
-                RowDefinition rdfn = new RowDefinition();
-                rdfn.Height = FirstRow.Height;
+                RowDefinition rdfn = new RowDefinition() { Height = FirstRow.Height };
                 layoutGrid.RowDefinitions.Add(rdfn);
+
+                Border brdr = new Border() { BorderBrush = borderBrushLeft.BorderBrush, BorderThickness = borderBrushLeft.BorderThickness };
+                layoutGrid.Children.Add(brdr);
+                Grid.SetRow(brdr, i);
+                Grid.SetColumn(brdr, 0);
+                brdr = new Border() { BorderBrush = borderBrushRight.BorderBrush, BorderThickness = borderBrushRight.BorderThickness };
+                layoutGrid.Children.Add(brdr);
+                Grid.SetRow(brdr, i);
+                Grid.SetColumn(brdr, 1);
 
                 CheckBox chbx = new CheckBox();
                 chbx.IsChecked = tdi.IsComplete;
@@ -104,6 +117,8 @@ namespace WpfApp
                 txblk.Text = tdi.Name;
                 txblk.Tag = tdi;
                 txblk.VerticalAlignment = VerticalAlignment.Center;
+                txblk.FontStyle = textBlock.FontStyle;
+                txblk.Padding = new Thickness {Left = 10 };
                 if (tdi.IsComplete)
                 {
                     txblk.TextDecorations = TextDecorations.Strikethrough;
@@ -119,13 +134,20 @@ namespace WpfApp
             RowDefinition rdfn1 = new RowDefinition();
             rdfn1.Height = FirstRow.Height;
             layoutGrid.RowDefinitions.Add(rdfn1);
-
+            
             TextBlock txblki = new TextBlock();
-            txblki.Text = "total count: " + (--i).ToString();
+            txblki.Text = "Total count: " + (--i).ToString();
             txblki.VerticalAlignment = VerticalAlignment.Center;
+            txblki.Padding = new Thickness { Left = 8 };
+            txblki.FontSize -= 3;
             layoutGrid.Children.Add(txblki);
             Grid.SetRow(txblki, ++i);
             Grid.SetColumn(txblki, 1);
+
+            Border brd = new Border() { BorderBrush = borderBrushLeft.BorderBrush, BorderThickness = new Thickness(){Right = 1} };
+            layoutGrid.Children.Add(brd);
+            Grid.SetRow(brd, i);
+            Grid.SetColumn(brd, 0);
         }
         
         async Task RunAsyncGet()
@@ -246,6 +268,10 @@ namespace WpfApp
 
         private void textBox_KeyDown(object sender, KeyEventArgs e)
         {
+            if (textBox.Text != "")
+            {
+                textBox.Background = Brushes.White;
+            }
             if (e.Key == Key.Enter)
             {
                 if (textBox.Text != "")
@@ -253,6 +279,14 @@ namespace WpfApp
                     ToDoItem newToDoitem = new ToDoItem { Name = textBox.Text, IsComplete = (bool)checkBox.IsChecked };
                     RunAsyncPost(newToDoitem);
                 }
+            }
+        }
+
+        private void textBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (textBox.Text == "")
+            {
+                textBox.Background = Brushes.Transparent;
             }
         }
     }

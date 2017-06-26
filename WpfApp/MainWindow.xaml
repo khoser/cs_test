@@ -40,7 +40,10 @@
             <ColumnDefinition Width="5*"  Tag="UnDelete"/>
             <ColumnDefinition Width="95*"  Tag="UnDelete"/>
         </Grid.ColumnDefinitions>
+        <Border x:Name="borderBrushLeft" BorderBrush="LightGray" BorderThickness="0,0,1,1" Tag="UnDelete" Grid.Row="0" Grid.Column="0"/>
+        <Border x:Name="borderBrushRight" BorderBrush="LightGray" BorderThickness="0,0,0,1" Tag="UnDelete" Grid.Row="0" Grid.Column="1"/>
         <CheckBox IsEnabled="False" x:Name="checkBox" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" Tag="UnDelete" Style="{StaticResource myCheckboxStyle}"/>
-        <TextBox x:Name="textBox" Grid.Column="1" Grid.Row="0" VerticalContentAlignment="Center" KeyDown="textBox_KeyDown" Tag="UnDelete"/>
+        <TextBlock x:Name="textBlock" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" Tag="UnDelete" Padding="10,0,0,0" Text="I want to..." FontStyle="Italic" FontWeight="UltraLight"/>
+        <TextBox x:Name="textBox" Grid.Column="1" Grid.Row="0" VerticalContentAlignment="Center" KeyDown="textBox_KeyDown" Tag="UnDelete" Padding="8,0,0,0" Background="Transparent" LostFocus="textBox_LostFocus"/>
     </Grid>
 </Window>
